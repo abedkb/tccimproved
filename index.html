@@ -1371,6 +1371,23 @@
         }
 
 
+        .empty-onleave-note {
+
+            font-size:
+                10px;
+
+            color:
+                #999;
+
+            font-style:
+                italic;
+
+            padding:
+                2px 4px;
+
+        }
+
+
         /* ==================================================
            MECHANICS
         ================================================== */
@@ -1515,9 +1532,6 @@
 
         .status-person {
 
-            background:
-                var(--dark-section);
-
             color:
                 white;
 
@@ -1527,9 +1541,18 @@
             margin-bottom:
                 4px;
 
+            border-radius:
+                4px;
+
             font-size:
                 clamp(10.5px, 0.85vw, 13px);
 
+        }
+
+
+        .status-person.on-loan {
+            outline: 2px dashed rgba(255,255,255,0.9);
+            outline-offset: -2px;
         }
 
 
@@ -2057,7 +2080,7 @@
                     <div class="app-field"><label>Email (must match what they'll sign up with)</label><input id="newStaffEmail" type="email"></div>
                     <div class="app-field"><label>Job title</label><input id="newStaffTitle"></div>
                     <div class="app-field"><label>Role code</label>
-                        <select id="newStaffRole">
+                        <select id="newStaffRole" onchange="AdminView.refreshNewStaffMachineField()">
                             <option value="MO">MO &mdash; Maker Operator</option>
                             <option value="PO">PO &mdash; Packer Operator</option>
                             <option value="MM">MM &mdash; Maker Mechanic</option>
@@ -2067,7 +2090,7 @@
                         </select>
                     </div>
                     <div class="app-field"><label>Home team</label>
-                        <select id="newStaffHomeTeam">
+                        <select id="newStaffHomeTeam" onchange="AdminView.refreshNewStaffMachineField()">
                             <option value="">&mdash; Unassigned &mdash;</option>
                             <option value="A">Shift A</option>
                             <option value="B">Shift B</option>
@@ -2075,45 +2098,24 @@
                             <option value="D">Shift D</option>
                         </select>
                     </div>
+                    <div class="app-field"><label>Machine (MO/PO only)</label>
+                        <select id="newStaffMachine">
+                            <option value="">&mdash; none &mdash;</option>
+                            <option value="MP22">MP22</option>
+                            <option value="MP23">MP23</option>
+                            <option value="MP26">MP26</option>
+                            <option value="MP28">MP28</option>
+                            <option value="MP29">MP29</option>
+                            <option value="MP30">MP30</option>
+                        </select>
+                    </div>
                     <div class="app-field"><label>Phone</label><input id="newStaffPhone"></div>
                     <div class="app-field"><label>Photo</label><input id="newStaffPhoto" type="file" accept="image/*"></div>
-                    <div class="app-field"><label>&nbsp;</label><label style="font-weight:normal;"><input type="checkbox" id="newStaffAdmin"> Is a leader (can sign in &amp; edit the roster)</label></div>
+                    <div class="app-field"><label>&nbsp;</label><label style="font-weight:normal;"><input type="checkbox" id="newStaffAdmin"> Give Admin Panel access (can sign in &amp; edit the roster)</label>
+                        <p style="font-size:11.5px;color:#999;margin:3px 0 0;">Not the same as Team Leader (TL) &mdash; that's set per shift in the Assignments tab, and almost nobody needs this checked. Leave it unchecked for regular staff.</p>
+                    </div>
                 </div>
                 <button class="app-btn" onclick="AdminView.addStaff()">Add staff member</button>
-            </div>
-
-            <div class="app-card" style="margin-bottom:18px;">
-                <h3 style="margin-bottom:8px;">Bulk import staff</h3>
-                <p style="font-size:13px;color:#777;margin-top:0;">
-                    Paste rows copied from Excel/Sheets, or upload a .csv file. One staff member per line, columns
-                    in this order: <b>Full name, Email, Job title, Role code, Phone, Home team (optional)</b>. Role
-                    code must be one of MO, PO, MM, PM, ET, OTHER; home team, if included, must be A/B/C/D &mdash;
-                    a header row is optional and auto-skipped. Photos aren't part of bulk import; add those
-                    individually above afterward if needed.
-                </p>
-                <div id="bulkImportMsg"></div>
-                <div class="app-field">
-                    <label>Upload .csv file (optional &mdash; fills the box below)</label>
-                    <input type="file" id="bulkStaffFile" accept=".csv,text/csv" onchange="AdminView.loadBulkFile(event)">
-                </div>
-                <div class="app-field">
-                    <label>Staff rows</label>
-                    <textarea id="bulkStaffText" rows="6" placeholder="Jane Doe, jane@tcc.co.tz, Maker Operator, MO, 0712345678, A
-John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
-                </div>
-                <button class="app-btn" onclick="AdminView.bulkImportStaff()">Import staff</button>
-            </div>
-
-            <div class="app-card" style="margin-bottom:18px; border-color:var(--accent);">
-                <h3 style="margin-bottom:8px;">Auto-generate duty roster</h3>
-                <p style="font-size:13px;color:#777;margin-top:0;">
-                    Fills every slot on every shift automatically from the staff pool below, matched by
-                    position (MO/PO/MM/PM/ET/Other) and spread evenly across Shifts A&ndash;D.
-                    This <b>replaces</b> whatever is currently assigned &mdash; you can still fine-tune
-                    individual slots afterward in the Assignments tab.
-                </p>
-                <button class="app-btn" style="background:var(--accent); color:#2b2b2b;" onclick="AdminView.autoGenerate()">Auto-generate roster</button>
-                <div id="autoGenMsg" style="margin-top:10px;"></div>
             </div>
 
             <div class="app-card" style="margin-bottom:14px;">
@@ -2164,6 +2166,7 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     <div class="app-field"><label>End date</label><input type="date" id="adminLeaveEnd"></div>
                 </div>
                 <div class="app-field"><label>Note (optional)</label><input id="adminLeaveNote"></div>
+                <p style="font-size:12px;color:#777;margin:2px 0 10px;">If Status is Approved, a fair-replacement suggestion for their slot appears right below the form once you add this record.</p>
                 <button class="app-btn" onclick="AdminView.addLeaveRecord()">Add leave record</button>
             </div>
             <div id="leaveAdminBody"></div>
@@ -2317,6 +2320,32 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
         const SHIFT_LETTERS = ['A','B','C','D'];
         const ROLE_LABELS = { MO:'Maker Operator', PO:'Packer Operator', MM:'Maker Mechanic', PM:'Packer Mechanic', ET:'Electrician' };
 
+        // For a leave replacement: exclude the team paired with the absent
+        // person's team today, and whichever team takes over that exact
+        // shift window (day/night) next. Given the fixed pairing (A-B,
+        // C-D) and fixed block order in our 8-day rotation, this always
+        // works out to one specific team, regardless of the date — see
+        // the verification run against 3 full cycles before this was
+        // added. This is the least-recently/soonest-involved team, so
+        // pulling from it doesn't lean on whoever's most conveniently
+        // available.
+        const REPLACEMENT_SOURCE_TEAM = { A:'D', B:'C', C:'A', D:'B' };
+
+        // Find which slot (if any) a staff member currently occupies,
+        // across all 4 teams — needed so a leave replacement can be
+        // placed into the EXACT same slot the absent person held.
+        async function findStaffCurrentSlot(staffId){
+            for (const team of SHIFT_LETTERS){
+                const assignments = await DB.getAssignments(team);
+                const a = assignments.find(x=>x.staff_id===staffId);
+                if (a){
+                    const sl = SLOT_TEMPLATE.find(s=>s.id===a.slot_id);
+                    return { team, slotId: a.slot_id, roleCode: sl ? sl.role_code : null, label: sl ? sl.label : a.slot_id };
+                }
+            }
+            return null;
+        }
+
         /* ============================================================
            DATA ACCESS LAYER — talks to Supabase directly.
            Read methods never throw: if Supabase is unreachable or not
@@ -2378,16 +2407,41 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             },
             async getLeave(){
                 return safeRead(async ()=>{
-                    const { data, error } = await sb.from('leave_records').select('*, staff(full_name)').order('start_date');
+                    // staff!staff_id disambiguates which of leave_records' two
+                    // foreign keys to staff (staff_id vs replacement_staff_id)
+                    // this embed should follow — without it, PostgREST can't
+                    // tell which one you mean and errors out.
+                    const { data, error } = await sb.from('leave_records').select('*, staff!staff_id(full_name)').order('start_date');
                     if (error) throw error; return data;
                 }, []);
             },
             async addLeave(rec){
-                const { error } = await sb.from('leave_records').insert(rec);
+                const { data, error } = await sb.from('leave_records').insert(rec).select().single();
                 if (error) throw error;
+                return data;
             },
             async updateLeaveStatus(id, status){
                 const { error } = await sb.from('leave_records').update({ status }).eq('id', id);
+                if (error) throw error;
+            },
+            // Remembers who was placed to cover this leave, and exactly where
+            // (team + slot), so that once the leave ends we know who to remove
+            // and who to restore — without this, placing a replacement would
+            // overwrite the original person's assignment with no way back.
+            async setLeaveReplacement(leaveId, replacementStaffId, team, slotId){
+                const { error } = await sb.from('leave_records').update({
+                    replacement_staff_id: replacementStaffId,
+                    replaced_team: team,
+                    replaced_slot_id: slotId,
+                }).eq('id', leaveId);
+                if (error) throw error;
+            },
+            async clearLeaveReplacement(leaveId){
+                const { error } = await sb.from('leave_records').update({
+                    replacement_staff_id: null,
+                    replaced_team: null,
+                    replaced_slot_id: null,
+                }).eq('id', leaveId);
                 if (error) throw error;
             },
             async addStaff(rec){
@@ -2397,53 +2451,6 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             async updateStaffHomeTeam(id, homeTeam){
                 const { error } = await sb.from('staff').update({ home_team: homeTeam || null }).eq('id', id);
                 if (error) throw error;
-            },
-            async autoGenerateRoster(){
-                const { data: teams, error: teamsErr } = await sb.from('shift_teams').select('id, letter');
-                if (teamsErr) throw teamsErr;
-                const teamIdByLetter = {};
-                teams.forEach(t => teamIdByLetter[t.letter] = t.id);
-
-                const { data: staffList, error: staffErr } = await sb.from('staff').select('*').order('full_name');
-                if (staffErr) throw staffErr;
-
-                // Group non-admin staff by role_code (MO/PO/MM/PM/ET/OTHER), alphabetically for
-                // a stable, repeatable result each time this is run.
-                const byRole = {};
-                (staffList || []).filter(s => !s.is_admin).forEach(s => {
-                    const r = s.role_code || 'OTHER';
-                    (byRole[r] = byRole[r] || []).push(s);
-                });
-
-                const pointer = {};
-                const placedCount = {};
-                const neededCount = {};
-                const rows = [];
-
-                // Outer loop over slot *types* (not teams) so staff are spread evenly across
-                // Shifts A-D rather than filling Shift A completely before B gets anyone.
-                for (const slot of SLOT_TEMPLATE){
-                    const role = slot.role_code;
-                    for (const team of SHIFT_LETTERS){
-                        neededCount[role] = (neededCount[role] || 0) + 1;
-                        const queue = byRole[role] || [];
-                        const idx = pointer[role] || 0;
-                        if (idx < queue.length){
-                            pointer[role] = idx + 1;
-                            rows.push({ shift_team_id: teamIdByLetter[team], slot_id: slot.id, staff_id: queue[idx].id, is_team_leader: false });
-                            placedCount[role] = (placedCount[role] || 0) + 1;
-                        }
-                    }
-                }
-
-                const { error: delErr } = await sb.from('assignments').delete().not('id', 'is', null);
-                if (delErr) throw delErr;
-                if (rows.length){
-                    const { error: insErr } = await sb.from('assignments').insert(rows);
-                    if (insErr) throw insErr;
-                }
-
-                return { placedCount, neededCount, totalPlaced: rows.length, totalSlots: SLOT_TEMPLATE.length * SHIFT_LETTERS.length };
             },
             async setAssignment(teamLetter, slotId, staffId, isTeamLeader){
                 const { data: team } = await sb.from('shift_teams').select('id').eq('letter', teamLetter).single();
@@ -2683,14 +2690,32 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
         }
 
-        function staffCardHtml(slot, staff, teamLetter, isTeamLeader, roleLabel){
+        // Who's on approved leave covering today — used everywhere a slot is
+        // rendered, so someone on leave is never ALSO shown as actively
+        // staffing a machine/role, even if a leader hasn't picked a
+        // replacement for them yet.
+        function onLeaveTodaySet(leaveList){
+            const today = eatDateString();
+            const ids = new Set();
+            (leaveList||[]).forEach(l=>{
+                if (l.status !== 'approved') return;
+                if (l.start_date > today) return;
+                if (l.end_date && l.end_date < today) return;
+                ids.add(l.staff_id);
+            });
+            return ids;
+        }
+
+        function staffCardHtml(slot, staff, teamLetter, isTeamLeader, roleLabel, onLeaveIds){
+            const isOnLeave = staff && onLeaveIds && onLeaveIds.has(staff.id);
             const photo = staff && staff.photo_url
                 ? `<img src="${staff.photo_url}" alt="">`
                 : `<div class="photo-placeholder">${staff ? initials(staff.full_name) : slot.role_code}</div>`;
-            if (!staff){
+            if (!staff || isOnLeave){
+                const note = isOnLeave ? `<div class="empty-onleave-note">${staff.full_name} &mdash; on leave</div>` : '';
                 return `<div class="empty-slot">
                     <div class="empty-position">${slot.role_code}</div>
-                    <div class="empty-space"></div>
+                    <div class="empty-space">${note}</div>
                   </div>`;
             }
             // If this person's home team differs from the team they're
@@ -2713,29 +2738,40 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             </div>`;
         }
 
-        function leaveContentHtml(leaveList, staffList, type, teamAssignments){
+        function leaveContentHtml(leaveList, staffList, type, teamLetter){
             const today = eatDateString();
-            const teamStaffIds = new Set(teamAssignments.map(a=>a.staff_id).filter(Boolean));
             const entries = leaveList.filter(l=>{
                 if (l.leave_type !== type) return false;
                 if (l.status && l.status !== 'approved') return false;
                 if (l.start_date > today) return false;
                 if (l.end_date && l.end_date < today) return false;
-                if (!teamStaffIds.has(l.staff_id)) return false; // only show on the person's own team
+                const staff = staffList.find(s=>s.id===l.staff_id);
+                // Show on the person's actual home team — NOT whether they
+                // currently hold a live slot there. Being replaced (the whole
+                // point of approving their leave) removes them from the slot,
+                // so checking slot membership made the entry vanish the moment
+                // a replacement was placed.
+                if (!staff || staff.home_team !== teamLetter) return false;
                 return true;
             }).map(l=>{
                 const staff = staffList.find(s=>s.id===l.staff_id) || l.staff;
-                return staff ? `<div class="status-person">${staff.full_name}<small>${staff.job_title||''}</small></div>` : '';
+                if (!staff) return '';
+                const colourTeam = staff.home_team || teamLetter;
+                return `<div class="status-person shift-${colourTeam.toLowerCase()}">${staff.full_name}<small>${staff.job_title||''}</small></div>`;
             }).join('');
             return entries;
         }
 
-        function reserveStaffHtml(teamLetter, assignments, staffList){
+        function reserveStaffHtml(teamLetter, assignments, staffList, onLeaveIds){
             const reserveSlots = SLOT_TEMPLATE.filter(s=>s.section==='others');
             const entries = reserveSlots.map(sl=>{
                 const a = assignments.find(x=>x.slot_id===sl.id);
                 const staff = findStaff(a, staffList);
-                return staff ? `<div class="status-person">${staff.full_name}<small>${staff.job_title||''}</small></div>` : '';
+                if (!staff || (onLeaveIds && onLeaveIds.has(staff.id))) return '';
+                const onLoan = staff.home_team && staff.home_team !== teamLetter;
+                const colourTeam = onLoan ? staff.home_team : teamLetter;
+                const loanTag = onLoan ? ` <span class="loan-tag" style="border-color:white;">TEAM ${staff.home_team}</span>` : '';
+                return `<div class="status-person shift-${colourTeam.toLowerCase()}${onLoan?' on-loan':''}">${staff.full_name}${loanTag}<small>${staff.job_title||''}</small></div>`;
             }).join('');
             return entries;
         }
@@ -2746,16 +2782,17 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
         // One machine (or FM) box's staff rows, using the same rich
         // photo-card look as the rest of the app (avatar, name, role,
         // phone) rather than a bare line of text.
-        function machineBoxSlotsHtml(codes, slotSection, machineName, slots, assignments, staffList, teamLetter){
+        function machineBoxSlotsHtml(codes, slotSection, machineName, slots, assignments, staffList, teamLetter, onLeaveIds){
             return codes.map(code=>{
                 const sl = slots.find(s=>s.section===slotSection && s.machine===machineName && s.role_code===code);
                 const a = assignments.find(x=>x.slot_id===sl.id);
                 const staff = findStaff(a, staffList);
-                return staffCardHtml(sl, staff, teamLetter, false, ROLE_LABELS[code]);
+                return staffCardHtml(sl, staff, teamLetter, false, ROLE_LABELS[code], onLeaveIds);
             }).join('');
         }
 
         function shiftColumnHtml(teamLetter, statusWord, isActiveNow, isNextUp, nextUpWord, slots, staffList, assignments, leaveList){
+            const onLeaveIds = onLeaveTodaySet(leaveList);
             // Machines + FM each show their own MO (and PO, except FM)
             // right on the board now, in the same photo-card style used
             // elsewhere — a bordered card with a colour-accented left
@@ -2765,7 +2802,7 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             const machineCardHtml = (m, i) => `<div class="machine-card">
                 <div class="machine-box" style="--machine-accent:${MACHINE_ACCENTS[i % MACHINE_ACCENTS.length]};">
                     <div class="machine-box-title">${m}</div>
-                    ${machineBoxSlotsHtml(['MO','PO'], 'machine', m, slots, assignments, staffList, teamLetter)}
+                    ${machineBoxSlotsHtml(['MO','PO'], 'machine', m, slots, assignments, staffList, teamLetter, onLeaveIds)}
                 </div>
             </div>`;
             const machinesTopHtml = MACHINE_LABELS.slice(0,4).map(machineCardHtml).join('');
@@ -2773,7 +2810,7 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                 + `<div class="fm-card">
                     <div class="machine-box" style="--machine-accent:#5b6470;">
                         <div class="machine-box-title">${FM_LABEL}</div>
-                        ${machineBoxSlotsHtml(['MO'], 'fm', FM_LABEL, slots, assignments, staffList, teamLetter)}
+                        ${machineBoxSlotsHtml(['MO'], 'fm', FM_LABEL, slots, assignments, staffList, teamLetter, onLeaveIds)}
                     </div>
                 </div>`;
 
@@ -2794,15 +2831,16 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                 const sl = slots.find(s=>s.role_code===code && s.section==='roles');
                 const a = assignments.find(x=>x.slot_id===sl.id);
                 const staff = findStaff(a, staffList);
-                return { code, sl, a, staff };
+                return { code, sl, a, staff, onLeave: staff && onLeaveIds.has(staff.id) };
             });
 
             const headerRowHtml = roleAssignments.map(r =>
                 `<th style="background:${ROLE_HEADER_STYLE[r.code].bg};">${ROLE_HEADER_STYLE[r.code].icon} ${r.code}</th>`).join('');
 
             const nameRowHtml = roleAssignments.map(r=>{
-                if (!r.staff){
-                    return `<td style="color:#999;font-weight:normal;">&mdash;</td>`;
+                if (!r.staff || r.onLeave){
+                    const note = r.onLeave ? `<span class="team-name-sub">${r.staff.full_name} on leave</span>` : '';
+                    return `<td style="color:#999;font-weight:normal;">&mdash;${note}</td>`;
                 }
                 const onLoan = r.staff.home_team && r.staff.home_team !== teamLetter;
                 const colourTeam = onLoan ? r.staff.home_team : teamLetter;
@@ -2814,18 +2852,18 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             }).join('');
 
             const tlRowHtml = roleAssignments.map(r =>
-                `<td><input type="radio" disabled ${r.a && r.a.is_team_leader ? 'checked' : ''}></td>`).join('');
+                `<td><input type="radio" disabled ${r.a && r.a.is_team_leader && !r.onLeave ? 'checked' : ''}></td>`).join('');
 
-            const currentTL = roleAssignments.find(r => r.a && r.a.is_team_leader && r.staff);
+            const currentTL = roleAssignments.find(r => r.a && r.a.is_team_leader && r.staff && !r.onLeave);
             const teamHeading = currentTL
                 ? `TEAM &mdash; Team Leader: ${currentTL.staff.full_name}`
                 : `TEAM &mdash; no Team Leader ticked yet`;
 
-            const vac = leaveContentHtml(leaveList, staffList, 'vacation', assignments);
-            const sick = leaveContentHtml(leaveList, staffList, 'sick', assignments);
-            const fam = leaveContentHtml(leaveList, staffList, 'family', assignments);
-            const perm = leaveContentHtml(leaveList, staffList, 'permission', assignments);
-            const others = reserveStaffHtml(teamLetter, assignments, staffList);
+            const vac = leaveContentHtml(leaveList, staffList, 'vacation', teamLetter);
+            const sick = leaveContentHtml(leaveList, staffList, 'sick', teamLetter);
+            const fam = leaveContentHtml(leaveList, staffList, 'family', teamLetter);
+            const perm = leaveContentHtml(leaveList, staffList, 'permission', teamLetter);
+            const others = reserveStaffHtml(teamLetter, assignments, staffList, onLeaveIds);
 
             // STANDBY belongs to whoever is genuinely about to come on duty next
             // (tomorrow's morning team while it's night, or today's night team
@@ -2945,10 +2983,48 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
             applyRotationVisibility();
         }
 
+        // Auto-restores anyone who was swapped out to cover a leave, once
+        // that leave has actually ended (date passed, or revoked) — removes
+        // the covering replacement and puts the original person back in
+        // their exact slot. Runs at the start of every board render; on an
+        // anonymous viewer's browser the write is silently rejected by RLS
+        // (view-only), so this only actually takes effect once a logged-in
+        // leader's browser renders the board — which is the only place
+        // capable of writing anyway.
+        async function reconcileExpiredReplacements(){
+            const leaveList = await DB.getLeave();
+            const today = eatDateString();
+            const covering = leaveList.filter(l => l.replacement_staff_id);
+            for (const l of covering){
+                const expired = l.status !== 'approved' || (l.end_date && l.end_date < today);
+                if (!expired) continue;
+                if (l.replaced_team && l.replaced_slot_id){
+                    // Restore unless a leader has deliberately put a THIRD,
+                    // different person in that slot since — an empty slot (the
+                    // replacement already having been removed some other way)
+                    // still gets the original person restored; it's only
+                    // skipped when someone else entirely is now there.
+                    const current = await DB.getAssignments(l.replaced_team);
+                    const a = current.find(x=>x.slot_id === l.replaced_slot_id);
+                    if (!a || a.staff_id === l.replacement_staff_id){
+                        await DB.setAssignment(l.replaced_team, l.replaced_slot_id, l.staff_id, false);
+                    }
+                }
+                await DB.clearLeaveReplacement(l.id);
+            }
+        }
+
         async function renderBoard(){
             try {
                 const today = effectiveRotationDateString();
                 const slots = await DB.getSlots();
+
+                // Best-effort — restores anyone whose covering leave has just
+                // ended, before fetching everything else, so this same render
+                // shows the correction immediately rather than waiting for the
+                // next refresh. Never blocks the render if it fails (e.g. an
+                // anonymous viewer with no write access).
+                try { await reconcileExpiredReplacements(); } catch (e){ /* view-only session, or nothing to reconcile */ }
 
                 // Fetch everything up front, with each call individually
                 // fault-tolerant (safeRead + timeout). None of these throw.
@@ -3049,6 +3125,7 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                 await this.renderStaffDirectory();
                 await this.renderLeaveAdmin();
                 document.getElementById('cycleStartInput').value = await DB.getRotationStart();
+                this.refreshNewStaffMachineField();
             },
             switchTab(tab){
                 document.querySelectorAll('.app-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
@@ -3115,9 +3192,13 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                 const staffId = document.getElementById('assign_'+slotId).value || null;
                 const tlEl = document.getElementById('tl_'+slotId);
                 const isTL = tlEl ? tlEl.checked : false;
-                await DB.setAssignment(team, slotId, staffId, isTL);
-                await this.renderAssignments(team);
-                await renderBoard();
+                try {
+                    await DB.setAssignment(team, slotId, staffId, isTL);
+                    await this.renderAssignments(team);
+                    await renderBoard();
+                } catch (e){
+                    alert('Could not save: ' + (e.message || e));
+                }
             },
             async renderStaffDirectory(){
                 this.lastStaffList = await DB.getStaff();
@@ -3214,6 +3295,13 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     alert('Could not update home team: ' + (e.message || e));
                 }
             },
+            refreshNewStaffMachineField(){
+                const role = document.getElementById('newStaffRole').value;
+                const machineField = document.getElementById('newStaffMachine');
+                const applicable = (role === 'MO' || role === 'PO');
+                machineField.disabled = !applicable;
+                if (!applicable) machineField.value = '';
+            },
             async addStaff(){
                 const msg = document.getElementById('addStaffMsg');
                 const name = document.getElementById('newStaffName').value.trim();
@@ -3230,94 +3318,31 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     is_admin: document.getElementById('newStaffAdmin').checked,
                     photo_url,
                 };
-                await DB.addStaff(rec);
-                msg.innerHTML = '<div class="app-msg ok">Staff member added.</div>';
-                await this.renderStaffDirectory();
-                await this.renderAssignments(this.activeTeamTab);
-            },
-            loadBulkFile(evt){
-                const file = evt.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => { document.getElementById('bulkStaffText').value = reader.result; };
-                reader.onerror = () => {
-                    document.getElementById('bulkImportMsg').innerHTML = '<div class="app-msg error">Could not read that file.</div>';
-                };
-                reader.readAsText(file);
-            },
-            parseBulkStaffText(text){
-                const VALID_ROLES = ['MO','PO','MM','PM','ET','OTHER'];
-                const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-                const rows = [];
-                const errors = [];
-                lines.forEach((line, i) => {
-                    const delim = line.includes('\t') ? '\t' : ',';
-                    const parts = line.split(delim).map(p=>p.trim());
-                    if (i===0 && (parts[1]||'').toLowerCase().includes('email')) return; // header row
-                    const [full_name, email, job_title, roleRaw, phone, homeTeamRaw] = parts;
-                    if (!full_name || !email){
-                        errors.push(`Line ${i+1}: missing name or email — skipped.`);
-                        return;
-                    }
-                    const role_code = (roleRaw || 'OTHER').toUpperCase();
-                    if (!VALID_ROLES.includes(role_code)){
-                        errors.push(`Line ${i+1}: role "${roleRaw||''}" not recognized (must be MO/PO/MM/PM/ET/OTHER) — skipped.`);
-                        return;
-                    }
-                    let home_team = (homeTeamRaw || '').trim().toUpperCase();
-                    if (home_team && !SHIFT_LETTERS.includes(home_team)){
-                        errors.push(`Line ${i+1}: home team "${homeTeamRaw}" not recognized (must be A/B/C/D) — left unassigned.`);
-                        home_team = '';
-                    }
-                    rows.push({ full_name, email, job_title: job_title || '', role_code, phone: phone || '', home_team: home_team || null, is_admin: false });
-                });
-                return { rows, errors };
-            },
-            async bulkImportStaff(){
-                const msg = document.getElementById('bulkImportMsg');
-                const text = document.getElementById('bulkStaffText').value;
-                if (!text.trim()){ msg.innerHTML = '<div class="app-msg error">Paste or upload some rows first.</div>'; return; }
-
-                const { rows, errors } = this.parseBulkStaffText(text);
-                if (!rows.length){
-                    msg.innerHTML = `<div class="app-msg error">No valid rows found.${errors.length ? '<br>'+errors.join('<br>') : ''}</div>`;
-                    return;
-                }
-
-                msg.innerHTML = `<div class="app-msg">Importing ${rows.length} staff member(s)&hellip;</div>`;
-                let successCount = 0;
-                const failMsgs = [...errors];
-                for (const rec of rows){
-                    try { await DB.addStaff(rec); successCount++; }
-                    catch (e){ failMsgs.push(`${rec.full_name} (${rec.email}): ${e.message || e}`); }
-                }
-
-                msg.innerHTML = `<div class="app-msg ${failMsgs.length ? 'error' : 'ok'}">
-                    Imported ${successCount} of ${rows.length} row(s).${failMsgs.length ? '<br>'+failMsgs.join('<br>') : ''}
-                </div>`;
-                document.getElementById('bulkStaffText').value = '';
-                document.getElementById('bulkStaffFile').value = '';
-                await this.renderStaffDirectory();
-                await this.renderAssignments(this.activeTeamTab);
-            },
-            async autoGenerate(){
-                const msg = document.getElementById('autoGenMsg');
-                if (!confirm('This replaces all current shift assignments with an auto-generated roster built from your staff pool. Continue?')) return;
-                msg.innerHTML = '<div class="app-msg">Generating&hellip;</div>';
+                const machine = document.getElementById('newStaffMachine').value;
                 try {
-                    const result = await DB.autoGenerateRoster();
-                    const shortfalls = Object.keys(result.neededCount).filter(r => (result.placedCount[r] || 0) < result.neededCount[r]);
-                    let extra = '';
-                    if (shortfalls.length){
-                        extra = '<br>Not enough staff to fill every slot for: ' + shortfalls.map(r =>
-                            `${r} (${result.placedCount[r] || 0}/${result.neededCount[r]})`).join(', ') +
-                            '. Add more staff with those positions and generate again, or fill the rest manually in Assignments.';
+                    const created = await DB.addStaff(rec);
+                    let noteHtml = '';
+                    // If a machine was picked (only meaningful for MO/PO, and only
+                    // possible once a home team is set), place them straight into
+                    // that slot — same as picking it from Staff Directory afterward,
+                    // just done in one step here.
+                    if (machine && (rec.role_code === 'MO' || rec.role_code === 'PO')){
+                        if (!rec.home_team){
+                            noteHtml = ' Machine not assigned &mdash; pick a home team too, then set it from Staff Directory.';
+                        } else {
+                            const roleSuffix = rec.role_code === 'PO' ? 'po' : 'mo';
+                            await DB.setAssignment(rec.home_team, machine.toLowerCase() + roleSuffix, created.id, false);
+                        }
                     }
-                    msg.innerHTML = `<div class="app-msg ok">Placed ${result.totalPlaced} of ${result.totalSlots} slots.${extra}</div>`;
+                    msg.innerHTML = `<div class="app-msg ok">Staff member added.${noteHtml}</div>`;
+                    await this.renderStaffDirectory();
                     await this.renderAssignments(this.activeTeamTab);
                     await renderBoard();
                 } catch (e){
-                    msg.innerHTML = `<div class="app-msg error">${e.message || e}</div>`;
+                    // Most common cause: that email is already used by another
+                    // staff member (email must be unique) — Supabase reports
+                    // that as an error here rather than silently failing.
+                    msg.innerHTML = `<div class="app-msg error">Could not add staff member: ${e.message || e}</div>`;
                 }
             },
             async renderLeaveAdmin(){
@@ -3338,12 +3363,18 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     } else {
                         actions = `<button class="app-btn secondary" style="padding:5px 10px;font-size:12px;" onclick="AdminView.setLeaveStatus('${l.id}','approved')">Re-approve</button>`;
                     }
-                    return `<tr><td>${staff?staff.full_name:''}</td><td>${l.leave_type}</td><td>${l.start_date}</td><td>${l.end_date||''}</td><td>${l.status}</td><td>${l.note||''}</td><td>${actions}</td></tr>`;
+                    // Find replacement is available regardless of status — a leader
+                    // may want to line one up while a request is still pending, or
+                    // revisit it after a rejection, not only once it's approved.
+                    actions += `<button class="app-btn secondary" style="padding:5px 10px;font-size:12px;margin-left:4px;" onclick="AdminView.showReplacementSuggestion('${l.id}','${l.staff_id}')">Find replacement</button>`;
+                    const row = `<tr><td>${staff?staff.full_name:''}</td><td>${l.leave_type}</td><td>${l.start_date}</td><td>${l.end_date||''}</td><td>${l.status}</td><td>${l.note||''}</td><td>${actions}</td></tr>`;
+                    const suggestionRow = `<tr><td colspan="7" style="border-top:none;padding-top:0;"><div id="replacementSuggestion_${l.id}"></div></td></tr>`;
+                    return row + suggestionRow;
                 }).join('');
                 document.getElementById('leaveAdminBody').innerHTML = `<h3 style="margin-bottom:10px;">Leave records</h3><table class="app-table">
                     <thead><tr><th>Staff</th><th>Type</th><th>Start</th><th>End</th><th>Status</th><th>Note</th><th></th></tr></thead>
                     <tbody>${rows}</tbody></table>
-                    <p style="font-size:12.5px;color:#777;margin-top:10px;">Reserve/backup staff (the "OTHERS" column on the board) are assigned from the Assignments tab, under Shift &rarr; Others.</p>`;
+                    <p style="font-size:12.5px;color:#777;margin-top:10px;">Reserve/backup staff (the "OTHERS" column on the board) are assigned from the Assignments tab, under Shift &rarr; Others. Approving a leave offers a fair-replacement suggestion &mdash; pulled from the one team that wasn't on duty with them today and isn't next up either, so cover doesn't always fall on whoever's most convenient.</p>`;
             },
             async addLeaveRecord(){
                 const msg = document.getElementById('addLeaveMsg');
@@ -3360,11 +3391,15 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     note: document.getElementById('adminLeaveNote').value,
                 };
                 try {
-                    await DB.addLeave(rec);
+                    const created = await DB.addLeave(rec);
                     msg.innerHTML = '<div class="app-msg ok">Leave record added.</div>';
                     document.getElementById('adminLeaveNote').value = '';
                     await this.renderLeaveAdmin();
                     await renderBoard();
+                    // Creating the record already Approved (skipping the separate
+                    // Approve step) still needs the same fair-replacement offer —
+                    // it shouldn't only appear when going through Approve.
+                    if (rec.status === 'approved' && created) await this.showReplacementSuggestion(created.id, staffId);
                 } catch (e){
                     msg.innerHTML = `<div class="app-msg error">${e.message || e}</div>`;
                 }
@@ -3374,16 +3409,66 @@ John Smith, john@tcc.co.tz, Packer Mechanic, PM, 0798765432, D"></textarea>
                     await DB.updateLeaveStatus(id, status);
                     await this.renderLeaveAdmin();
                     await renderBoard();
+                    if (status === 'approved'){
+                        const leaveList = await DB.getLeave();
+                        const rec = leaveList.find(l=>l.id===id);
+                        if (rec) await this.showReplacementSuggestion(id, rec.staff_id);
+                    }
                 } catch (e){
                     alert('Could not update: ' + (e.message || e));
+                }
+            },
+            async showReplacementSuggestion(leaveId, staffId){
+                const box = document.getElementById('replacementSuggestion_'+leaveId);
+                if (!box) return;
+                box.innerHTML = '<span style="font-size:12.5px;color:#777;">Finding a fair replacement&hellip;</span>';
+                const slot = await findStaffCurrentSlot(staffId);
+                if (!slot){
+                    box.innerHTML = `<p style="font-size:12.5px;color:#777;margin:4px 0;">This person isn't currently placed in any slot, so there's nothing on the board to cover.</p>`;
+                    return;
+                }
+                const sourceTeam = REPLACEMENT_SOURCE_TEAM[slot.team];
+                const staffList = await DB.getStaff();
+                const candidates = staffList.filter(s => s.home_team === sourceTeam && s.role_code === slot.roleCode && s.id !== staffId);
+                if (!candidates.length){
+                    box.innerHTML = `<p style="font-size:12.5px;color:#a86b6b;margin:4px 0;">No ${slot.roleCode} available on Team ${sourceTeam} (the fair pick for Team ${slot.team}'s ${slot.label}) to cover this. Assign someone manually from Staff Directory or Assignments if needed.</p>`;
+                    return;
+                }
+                const options = candidates.map(s=>`<option value="${s.id}">${s.full_name}</option>`).join('');
+                box.innerHTML = `<div style="font-size:12.5px;color:#444;margin:4px 0;padding:6px;background:#f4f4f4;border-radius:4px;">
+                    <b>Suggested cover for ${slot.label} (Team ${slot.team}):</b> Team ${sourceTeam} &mdash; not paired with them today, not next up either.
+                    <select id="replPick_${leaveId}" style="margin-left:6px;">${options}</select>
+                    <button class="app-btn" style="padding:4px 10px;font-size:12px;margin-left:6px;" onclick="AdminView.placeReplacement('${leaveId}','${slot.team}','${slot.slotId}','${staffId}')">Place in ${slot.label}</button>
+                </div>`;
+            },
+            async placeReplacement(leaveId, team, slotId, originalStaffId){
+                const sel = document.getElementById('replPick_'+leaveId);
+                const staffId = sel ? sel.value : null;
+                if (!staffId) return;
+                try {
+                    await DB.setAssignment(team, slotId, staffId, false);
+                    // Remember who's covering and exactly where, so this can be
+                    // undone automatically the moment the leave ends — see
+                    // reconcileExpiredReplacements(), which runs on every board
+                    // load/refresh.
+                    await DB.setLeaveReplacement(leaveId, staffId, team, slotId);
+                    document.getElementById('replacementSuggestion_'+leaveId).innerHTML =
+                        `<div class="app-msg ok" style="margin:4px 0;">Placed &mdash; they'll show on the board in their own team's colour, marked as on loan. They'll automatically be swapped back out and the original person restored once this leave ends.</div>`;
+                    await renderBoard();
+                } catch (e){
+                    alert('Could not place replacement: ' + (e.message || e));
                 }
             },
             async saveRotation(){
                 const val = document.getElementById('cycleStartInput').value;
                 if (!val) return;
-                await DB.saveRotationStart(val);
-                document.getElementById('rotationMsg').innerHTML = '<div class="app-msg ok">Rotation start date saved.</div>';
-                await renderBoard();
+                try {
+                    await DB.saveRotationStart(val);
+                    document.getElementById('rotationMsg').innerHTML = '<div class="app-msg ok">Rotation start date saved.</div>';
+                    await renderBoard();
+                } catch (e){
+                    document.getElementById('rotationMsg').innerHTML = `<div class="app-msg error">Could not save: ${e.message || e}</div>`;
+                }
             }
         };
 
