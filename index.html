@@ -2854,10 +2854,7 @@
             const tlRowHtml = roleAssignments.map(r =>
                 `<td><input type="radio" disabled ${r.a && r.a.is_team_leader && !r.onLeave ? 'checked' : ''}></td>`).join('');
 
-            const currentTL = roleAssignments.find(r => r.a && r.a.is_team_leader && r.staff && !r.onLeave);
-            const teamHeading = currentTL
-                ? `TEAM &mdash; Team Leader: ${currentTL.staff.full_name}`
-                : `TEAM &mdash; no Team Leader ticked yet`;
+            const teamHeading = `TEAM LEADER (TL)`;
 
             const vac = leaveContentHtml(leaveList, staffList, 'vacation', teamLetter);
             const sick = leaveContentHtml(leaveList, staffList, 'sick', teamLetter);
