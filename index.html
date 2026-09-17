@@ -1880,6 +1880,7 @@
         .app-msg.ok { background: #eaf3ec; color: var(--ok); }
 
         .app-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .app-tabs button { flex: 1 1 0; }
         .app-tabs button {
             border: 1px solid var(--light-border); background: #fff; padding: 8px 18px; border-radius: 20px;
             cursor: pointer; font-weight: bold; font-size: 13px; color: #666;
@@ -1895,6 +1896,7 @@
         .app-table-wrap { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(30,40,70,0.07); border: 1px solid var(--light-border); }
         table.app-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         table.app-table th, table.app-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--light-border); }
+        table.app-table td select { width: 100%; }
         table.app-table th { background: #eef3fa; color: #2f4a68; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
         table.app-table tbody tr:hover { background: #f7f9fc; }
 
@@ -1939,7 +1941,7 @@
         .admin-shell {
             display: flex;
             gap: 20px;
-            align-items: flex-start;
+            align-items: stretch;
         }
         .admin-sidebar {
             width: 200px;
