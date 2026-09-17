@@ -1798,7 +1798,7 @@
         .app-view {
             display: none;
             padding: 26px 24px 50px;
-            max-width: 1100px;
+            max-width: 1240px;
             margin: 0 auto;
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -1820,42 +1820,174 @@
 
         .app-card {
             background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            border: 1px solid var(--light-border);
+            border-radius: 12px;
             padding: 22px;
+            box-shadow: 0 4px 16px rgba(30,40,70,0.08);
         }
         .app-login-wrap { max-width: 400px; margin: 30px auto; }
+
+        .login-card {
+            max-width: 380px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 18px;
+            padding: 36px 32px 32px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(30,40,70,0.16);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #356b9c, #63527f, #d5b35e, #4f8a72);
+        }
+        .login-card .login-icon {
+            width: 56px; height: 56px;
+            margin: 4px auto 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f8fd1, #2f66a8);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 16px rgba(47,102,168,0.35);
+        }
+        .login-card h2 { margin-bottom: 20px; color: #2c3550; }
+        .login-card .app-field { text-align: left; }
+        .login-card > div[style*="flex"] { justify-content: center; }
+
         .app-field { margin-bottom: 14px; }
         .app-field label { display: block; font-size: 12.5px; font-weight: bold; color: #666; margin-bottom: 5px; }
         .app-field input, .app-field select, .app-field textarea {
-            width: 100%; padding: 9px 11px; border: 1px solid var(--light-border); border-radius: 4px; background: #fff; font-size: 14px;
+            width: 100%; padding: 9px 11px; border: 1px solid var(--light-border); border-radius: 6px; background: #fff; font-size: 14px;
+        }
+        .app-field input:focus, .app-field select:focus, .app-field textarea:focus {
+            outline: none; border-color: #4f8fd1; box-shadow: 0 0 0 3px rgba(79,143,209,0.15);
         }
         .app-btn {
-            background: var(--dark-section); color: #fff; border: none; padding: 10px 18px;
-            border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13.5px;
+            background: linear-gradient(135deg, #333c4d, #1d2330); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13.5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            transition: transform .08s ease, opacity .15s ease;
         }
-        .app-btn:hover { opacity: .9; }
-        .app-btn.secondary { background: transparent; color: #333; border: 1px solid var(--border); }
-        .app-msg { font-size: 13px; padding: 9px 12px; border-radius: 4px; margin-bottom: 12px; }
+        .app-btn:hover { opacity: .9; transform: translateY(-1px); }
+        .app-btn.secondary { background: transparent; color: #333; border: 1px solid var(--border); box-shadow: none; }
+        .app-msg { font-size: 13px; padding: 9px 12px; border-radius: 8px; margin-bottom: 12px; }
         .app-msg.error { background: #fbeceb; color: var(--danger); }
         .app-msg.ok { background: #eaf3ec; color: var(--ok); }
 
-        .app-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+        .app-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .app-tabs button {
-            border: 1px solid var(--border); background: #fff; padding: 8px 16px; border-radius: 4px;
+            border: 1px solid var(--light-border); background: #fff; padding: 8px 18px; border-radius: 20px;
             cursor: pointer; font-weight: bold; font-size: 13px; color: #666;
+            box-shadow: 0 1px 4px rgba(30,40,70,0.06);
+            transition: transform .08s ease;
         }
-        .app-tabs button.active { background: var(--dark-section); color: #fff; border-color: var(--dark-section); }
+        .app-tabs button:hover { transform: translateY(-1px); }
+        .app-tabs button.active {
+            background: linear-gradient(135deg, #4f8fd1, #2f66a8); color: #fff; border-color: transparent;
+            box-shadow: 0 3px 10px rgba(47,102,168,0.35);
+        }
 
+        .app-table-wrap { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(30,40,70,0.07); border: 1px solid var(--light-border); }
         table.app-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        table.app-table th, table.app-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--light-border); }
-        table.app-table th { color: #666; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+        table.app-table th, table.app-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--light-border); }
+        table.app-table th { background: #eef3fa; color: #2f4a68; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+        table.app-table tbody tr:hover { background: #f7f9fc; }
 
         .app-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         @media (max-width: 800px) { .app-grid-2 { grid-template-columns: 1fr; } }
 
         .admin-tab-panel { display: none; }
         .admin-tab-panel.active { display: block; }
+
+        .app-section-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 17px; font-weight: 700; color: #2c3550;
+            margin-bottom: 12px;
+        }
+
+        /* ==================================================
+           ADMIN DASHBOARD — quick-stat cards + sidebar layout,
+           deliberately using the SAME visual language as the public
+           duty board (gradient pills, team colours, card radius/
+           shadow, icon-prefixed labels) so the two don't read as
+           two different products.
+        ================================================== */
+        .admin-stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .admin-stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 4px 16px rgba(30,40,70,0.08);
+            border-left: 4px solid var(--stat-accent, #4f8fd1);
+        }
+        .admin-stat-card .stat-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+            color: #888; font-weight: 700; margin-bottom: 6px;
+        }
+        .admin-stat-card .stat-value { font-size: 25px; font-weight: 800; color: #2c3550; }
+
+        .admin-shell {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .admin-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: linear-gradient(180deg, #333c4d, #1d2330);
+            border-radius: 14px;
+            padding: 14px 10px;
+            box-shadow: 0 6px 20px rgba(30,40,70,0.18);
+            position: sticky;
+            top: 16px;
+        }
+        .admin-sidebar .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: flex-start;
+            text-align: left;
+            width: 100%;
+            background: transparent;
+            color: rgba(255,255,255,0.75);
+            border: none;
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: none;
+        }
+        .admin-sidebar .tab-btn:hover { background: rgba(255,255,255,0.08); transform: none; }
+        .admin-sidebar .tab-btn.active {
+            background: linear-gradient(135deg, #4f8fd1, #2f66a8);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(47,102,168,0.4);
+        }
+        .admin-main { flex: 1; min-width: 0; }
+
+        @media (max-width: 800px) {
+            .admin-shell { flex-direction: column; }
+            .admin-sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                position: static;
+            }
+        }
 
         /* ---- rotating single-shift kiosk view ---- */
 
@@ -2035,13 +2167,9 @@
     ================================================= -->
 
     <main id="view-login" class="app-view">
-        <div class="app-login-wrap app-card">
-            <h2 style="margin-bottom:4px;">Leader sign in</h2>
-            <p style="color:#777;font-size:13px;margin-top:0;margin-bottom:18px;">
-                Only leaders have accounts on this system &mdash; leaders can update who's on duty. Everyone else just
-                views the public duty board, no account needed. New leader: use "Create account" with the email an
-                existing leader registered for you as a leader in the Admin Panel.
-            </p>
+        <div class="login-card">
+            <div class="login-icon">&#128274;</div>
+            <h2>Sign In</h2>
             <div id="loginMsg"></div>
             <div class="app-field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@tcc.co.tz"></div>
             <div class="app-field"><label>Password</label><input type="password" id="loginPassword" placeholder="********"></div>
@@ -2058,13 +2186,18 @@
     ================================================= -->
 
     <main id="view-admin" class="app-view">
-        <h2 style="margin-bottom:16px;">Admin Panel</h2>
-        <div class="app-tabs">
-            <button class="tab-btn active" data-atab="assign" onclick="AdminView.switchTab('assign')">Assignments</button>
-            <button class="tab-btn" data-atab="staff" onclick="AdminView.switchTab('staff')">Staff Directory</button>
-            <button class="tab-btn" data-atab="leave" onclick="AdminView.switchTab('leave')">Leave &amp; Reserve</button>
-            <button class="tab-btn" data-atab="rotation" onclick="AdminView.switchTab('rotation')">Rotation Settings</button>
-        </div>
+        <h2 style="margin-bottom:16px;">&#128736;&#65039; Admin Panel</h2>
+
+        <div id="adminStatCards" class="admin-stat-row"></div>
+
+        <div class="admin-shell">
+            <aside class="admin-sidebar">
+                <button class="tab-btn active" data-atab="assign" onclick="AdminView.switchTab('assign')">&#128203; Assignments</button>
+                <button class="tab-btn" data-atab="staff" onclick="AdminView.switchTab('staff')">&#128101; Staff Directory</button>
+                <button class="tab-btn" data-atab="leave" onclick="AdminView.switchTab('leave')">&#128197; Leave &amp; Reserve</button>
+                <button class="tab-btn" data-atab="rotation" onclick="AdminView.switchTab('rotation')">&#128260; Rotation Settings</button>
+            </aside>
+            <div class="admin-main">
 
         <div id="admin-assign" class="admin-tab-panel active">
             <div class="app-tabs" id="adminTeamTabs"></div>
@@ -2073,7 +2206,7 @@
 
         <div id="admin-staff" class="admin-tab-panel">
             <div class="app-card" style="margin-bottom:18px;">
-                <h3 style="margin-bottom:12px;">Add staff member</h3>
+                <h3 style="margin-bottom:12px;">&#128100; Add staff member</h3>
                 <div id="addStaffMsg"></div>
                 <div class="app-grid-2">
                     <div class="app-field"><label>Full name</label><input id="newStaffName"></div>
@@ -2111,8 +2244,11 @@
                     </div>
                     <div class="app-field"><label>Phone</label><input id="newStaffPhone"></div>
                     <div class="app-field"><label>Photo</label><input id="newStaffPhoto" type="file" accept="image/*"></div>
-                    <div class="app-field"><label>&nbsp;</label><label style="font-weight:normal;"><input type="checkbox" id="newStaffAdmin"> Give Admin Panel access (can sign in &amp; edit the roster)</label>
-                        <p style="font-size:11.5px;color:#999;margin:3px 0 0;">Not the same as Team Leader (TL) &mdash; that's set per shift in the Assignments tab, and almost nobody needs this checked. Leave it unchecked for regular staff.</p>
+                    <div class="app-field"><label>Access level</label>
+                        <select id="newStaffAdmin">
+                            <option value="">Staff (view only, no login)</option>
+                            <option value="true">Leader (admin access)</option>
+                        </select>
                     </div>
                 </div>
                 <button class="app-btn" onclick="AdminView.addStaff()">Add staff member</button>
@@ -2144,7 +2280,7 @@
 
         <div id="admin-leave" class="admin-tab-panel">
             <div class="app-card" style="margin-bottom:18px; max-width:560px;">
-                <h3 style="margin-bottom:12px;">Add leave record</h3>
+                <h3 style="margin-bottom:12px;">&#128197; Add leave record</h3>
                 <div id="addLeaveMsg"></div>
                 <div class="app-field"><label>Staff</label><select id="adminLeaveStaff"></select></div>
                 <div class="app-grid-2">
@@ -2166,7 +2302,6 @@
                     <div class="app-field"><label>End date</label><input type="date" id="adminLeaveEnd"></div>
                 </div>
                 <div class="app-field"><label>Note (optional)</label><input id="adminLeaveNote"></div>
-                <p style="font-size:12px;color:#777;margin:2px 0 10px;">If Status is Approved, a fair-replacement suggestion for their slot appears right below the form once you add this record.</p>
                 <button class="app-btn" onclick="AdminView.addLeaveRecord()">Add leave record</button>
             </div>
             <div id="leaveAdminBody"></div>
@@ -2174,11 +2309,13 @@
 
         <div id="admin-rotation" class="admin-tab-panel">
             <div class="app-card" style="max-width:480px; margin-bottom:18px;">
-                <h3 style="margin-bottom:12px;">Rotation cycle</h3>
-                <p style="font-size:13px;color:#777;">Pattern: each team works 2 consecutive days on one shift, 2 days OFF, then 2 consecutive days on the OTHER shift, then 2 more days OFF &mdash; an 8-day cycle. Exactly one team is on Day and one on Night at any time.</p>
+                <h3 style="margin-bottom:12px;">&#128260; Rotation cycle</h3>
                 <div class="app-field"><label>Cycle start date</label><input type="date" id="cycleStartInput"></div>
                 <button class="app-btn" onclick="AdminView.saveRotation()">Save</button>
                 <div id="rotationMsg" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
             </div>
         </div>
     </main>
@@ -3123,9 +3260,30 @@
                 await this.renderLeaveAdmin();
                 document.getElementById('cycleStartInput').value = await DB.getRotationStart();
                 this.refreshNewStaffMachineField();
+                await this.renderStatCards();
+            },
+            async renderStatCards(){
+                const staffList = await DB.getStaff();
+                const leaveList = await DB.getLeave();
+                const today = eatDateString();
+                const pendingCount = leaveList.filter(l => l.status === 'pending').length;
+                const onLeaveToday = leaveList.filter(l =>
+                    l.status === 'approved' && l.start_date <= today && (!l.end_date || l.end_date >= today)
+                ).length;
+                const cards = [
+                    { label: 'Total Staff', value: staffList.length, icon: '&#128101;', accent: '#4f8fd1' },
+                    { label: 'Teams', value: SHIFT_LETTERS.length, icon: '&#127981;', accent: '#63527f' },
+                    { label: 'Pending Leave', value: pendingCount, icon: '&#9203;', accent: '#d5b35e' },
+                    { label: 'On Leave Today', value: onLeaveToday, icon: '&#127796;', accent: '#4f8a72' },
+                ];
+                document.getElementById('adminStatCards').innerHTML = cards.map(c =>
+                    `<div class="admin-stat-card" style="--stat-accent:${c.accent};">
+                        <div class="stat-label">${c.icon} ${c.label}</div>
+                        <div class="stat-value">${c.value}</div>
+                    </div>`).join('');
             },
             switchTab(tab){
-                document.querySelectorAll('.app-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+                document.querySelectorAll('.admin-sidebar .tab-btn').forEach(b=>b.classList.remove('active'));
                 document.querySelector(`.tab-btn[data-atab="${tab}"]`).classList.add('active');
                 document.querySelectorAll('.admin-tab-panel').forEach(el=>el.classList.remove('active'));
                 document.getElementById('admin-'+tab).classList.add('active');
@@ -3178,8 +3336,7 @@
                 }).join('');
                 document.getElementById('adminAssignBody').innerHTML = `<table class="app-table">
                     <thead><tr><th>Role</th><th>Code</th><th>Assign staff</th><th>Team Leader</th><th></th></tr></thead>
-                    <tbody>${rows}</tbody></table>
-                    <p style="font-size:12.5px;color:#777;margin-top:10px;">Only one person can be Team Leader per shift &mdash; ticking TL here and saving automatically clears it from the other 4 roles. Each dropdown only lists staff whose own role matches that row (Reserve/Backup rows take anyone). Machine assignments (MP22, MP23, etc.) are set from the Staff Directory tab instead &mdash; find the MO/PO there and pick their machine.</p>`;
+                    <tbody>${rows}</tbody></table>`;
                 assignments.forEach(a=>{
                     const sel = document.getElementById('assign_'+a.slot_id);
                     if (sel) sel.value = a.staff_id;
@@ -3215,6 +3372,7 @@
                     });
                 });
                 this.renderStaffDirectoryRows();
+                if (document.getElementById('adminStatCards')) await this.renderStatCards();
             },
             renderStaffDirectoryRows(){
                 const staffList = this.lastStaffList || [];
@@ -3246,8 +3404,7 @@
                 const rows = filtered.map(s=>`<tr>
                     <td>${s.full_name}</td><td>${s.email||''}</td><td>${s.job_title||''}</td><td>${s.role_code||''}</td><td>${homeTeamSelect(s)}</td><td>${machineCell(s)}</td><td>${s.is_admin?'Yes':''}</td>
                 </tr>`).join('');
-                document.getElementById('staffDirectory').innerHTML = `<h3 style="margin-bottom:10px;">All staff (${filtered.length}${q ? ` matching &ldquo;${q}&rdquo;` : ''})</h3>
-                    <p style="font-size:12.5px;color:#777;margin-top:0;">Home team is the team someone normally belongs to. For MO/PO staff, Machine assigns them straight to that machine on their home team's board &mdash; no need to go find the row in Assignments. Assigning someone in a <i>different</i> team there still marks them on loan, coloured with their home team's colour.</p>
+                document.getElementById('staffDirectory').innerHTML = `<h3 style="margin-bottom:10px;">&#128101; All staff (${filtered.length}${q ? ` matching &ldquo;${q}&rdquo;` : ''})</h3>
                     <table class="app-table"><thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Role</th><th>Home team</th><th>Machine</th><th>Leader?</th></tr></thead>
                     <tbody>${rows}</tbody></table>`;
             },
@@ -3312,7 +3469,7 @@
                     role_code: document.getElementById('newStaffRole').value,
                     home_team: document.getElementById('newStaffHomeTeam').value || null,
                     phone: document.getElementById('newStaffPhone').value,
-                    is_admin: document.getElementById('newStaffAdmin').checked,
+                    is_admin: document.getElementById('newStaffAdmin').value === 'true',
                     photo_url,
                 };
                 const machine = document.getElementById('newStaffMachine').value;
@@ -3349,10 +3506,22 @@
                 const staffSelect = document.getElementById('adminLeaveStaff');
                 staffSelect.innerHTML = staffList.map(s=>`<option value="${s.id}">${s.full_name}</option>`).join('');
 
+                const today = eatDateString();
                 const rows = leaveList.map(l=>{
                     const staff = staffList.find(s=>s.id===l.staff_id) || l.staff;
+                    // Once an approved leave's end date has passed, it's history —
+                    // there's nothing left to revoke and nobody left to cover, so
+                    // showing those as live actions just invites confusion (or a
+                    // leader accidentally re-triggering a replacement for dates
+                    // that already happened).
+                    const isPast = l.end_date && l.end_date < today;
+                    const isCompleted = l.status === 'approved' && isPast;
+
+                    let statusDisplay = l.status;
                     let actions = '';
-                    if (l.status === 'pending'){
+                    if (isCompleted){
+                        statusDisplay = 'completed';
+                    } else if (l.status === 'pending'){
                         actions = `<button class="app-btn" style="padding:5px 10px;font-size:12px;background:var(--ok);" onclick="AdminView.setLeaveStatus('${l.id}','approved')">Approve</button>
                             <button class="app-btn" style="padding:5px 10px;font-size:12px;background:var(--danger);margin-left:4px;" onclick="AdminView.setLeaveStatus('${l.id}','rejected')">Reject</button>`;
                     } else if (l.status === 'approved'){
@@ -3360,18 +3529,20 @@
                     } else {
                         actions = `<button class="app-btn secondary" style="padding:5px 10px;font-size:12px;" onclick="AdminView.setLeaveStatus('${l.id}','approved')">Re-approve</button>`;
                     }
-                    // Find replacement is available regardless of status — a leader
-                    // may want to line one up while a request is still pending, or
-                    // revisit it after a rejection, not only once it's approved.
-                    actions += `<button class="app-btn secondary" style="padding:5px 10px;font-size:12px;margin-left:4px;" onclick="AdminView.showReplacementSuggestion('${l.id}','${l.staff_id}')">Find replacement</button>`;
-                    const row = `<tr><td>${staff?staff.full_name:''}</td><td>${l.leave_type}</td><td>${l.start_date}</td><td>${l.end_date||''}</td><td>${l.status}</td><td>${l.note||''}</td><td>${actions}</td></tr>`;
-                    const suggestionRow = `<tr><td colspan="7" style="border-top:none;padding-top:0;"><div id="replacementSuggestion_${l.id}"></div></td></tr>`;
+                    // Find replacement stays available on anything still live
+                    // (pending, currently-approved, or rejected-and-reconsiderable)
+                    // — just not on a record that's already run its course.
+                    if (!isCompleted){
+                        actions += `<button class="app-btn secondary" style="padding:5px 10px;font-size:12px;margin-left:4px;" onclick="AdminView.showReplacementSuggestion('${l.id}','${l.staff_id}')">Find replacement</button>`;
+                    }
+                    const row = `<tr${isCompleted ? ' style="color:#999;"' : ''}><td>${staff?staff.full_name:''}</td><td>${l.leave_type}</td><td>${l.start_date}</td><td>${l.end_date||''}</td><td>${statusDisplay}</td><td>${l.note||''}</td><td>${actions}</td></tr>`;
+                    const suggestionRow = isCompleted ? '' : `<tr><td colspan="7" style="border-top:none;padding-top:0;"><div id="replacementSuggestion_${l.id}"></div></td></tr>`;
                     return row + suggestionRow;
                 }).join('');
-                document.getElementById('leaveAdminBody').innerHTML = `<h3 style="margin-bottom:10px;">Leave records</h3><table class="app-table">
+                document.getElementById('leaveAdminBody').innerHTML = `<h3 style="margin-bottom:10px;">&#128203; Leave records</h3><table class="app-table">
                     <thead><tr><th>Staff</th><th>Type</th><th>Start</th><th>End</th><th>Status</th><th>Note</th><th></th></tr></thead>
-                    <tbody>${rows}</tbody></table>
-                    <p style="font-size:12.5px;color:#777;margin-top:10px;">Reserve/backup staff (the "OTHERS" column on the board) are assigned from the Assignments tab, under Shift &rarr; Others. Approving a leave offers a fair-replacement suggestion &mdash; pulled from the one team that wasn't on duty with them today and isn't next up either, so cover doesn't always fall on whoever's most convenient.</p>`;
+                    <tbody>${rows}</tbody></table>`;
+                if (document.getElementById('adminStatCards')) await this.renderStatCards();
             },
             async addLeaveRecord(){
                 const msg = document.getElementById('addLeaveMsg');
