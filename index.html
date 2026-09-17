@@ -2735,13 +2735,35 @@
         /* ============================================================
            NAV / VIEW SWITCHING
            ============================================================ */
-        function showView(name){
+        let historyInitialized = false;
+        function showView(name, fromHistory){
             document.getElementById('rosterBoard').classList.toggle('active', name==='board');
             document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
             if (name !== 'board') document.getElementById('view-'+name).classList.add('active');
             document.body.classList.toggle('board-mode', name==='board');
             if (name === 'board') fitBoardToScreen();
+
+            // Keep the browser/device's own back button moving between the
+            // app's OWN views (Duty Board <-> Sign in <-> Admin Panel)
+            // instead of leaving the page entirely. Every genuine in-app
+            // navigation pushes a history entry; popstate (the back/forward
+            // button firing) replays it here without pushing again, so
+            // pressing back repeatedly steps back through the app's own
+            // views first, only leaving once that's exhausted.
+            if (fromHistory){
+                historyInitialized = true;
+            } else if (!historyInitialized){
+                history.replaceState({ view: name }, '', '#' + name);
+                historyInitialized = true;
+            } else if (!history.state || history.state.view !== name){
+                history.pushState({ view: name }, '', '#' + name);
+            }
         }
+
+        window.addEventListener('popstate', (e) => {
+            const view = (e.state && e.state.view) || 'board';
+            showView(view, true);
+        });
 
         /* ============================================================
            FIT-TO-SCREEN — sets a min-height on each column's
